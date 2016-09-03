@@ -7,6 +7,13 @@ import datetime
 import time
 from prettytable import PrettyTable
 
+PROVINCE_MAP = {11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",
+            22:"吉林", 23:"黑龙江",31:"上海",32:"江苏",33:"浙江",34:" 安徽",
+            35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",
+            44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",
+            53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",
+            65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外"}
+
 def validate(fn):
     def wrapper(*args, **kwargs):
         id = kwargs.get("id", '')
@@ -20,14 +27,8 @@ def validate(fn):
 
 @validate
 def get_location_by_id(id, database = "data/行政区划代码.txt"):
-    province_map = {11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",
-                22:"吉林", 23:"黑龙江",31:"上海",32:"江苏",33:"浙江",34:" 安徽",
-                35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",
-                44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",
-                53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",
-                65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外"}
     location_code = id[:6]
-    province = province_map[int(location_code[:2])] 
+    province = PROVINCE_MAP[int(location_code[:2])] 
     city = None
     with open(database, "r") as f:
         for record in f:
