@@ -6,7 +6,8 @@ This Project is a collection of my code snippets for personal use, **but anyone 
 
 ### 1. [Shell](./shell)
 
-1. [join](shell/join.sh): Join elements of an array with a charactor.
+1. [join](shell/join.sh): Join elements of an array with a charactor in pure bash.
+2. [split](shell/split.sh): Split a string into an array using a specied delimiter in pure bash.
 
 
 ### 2. [C/CPP](./cpp)
