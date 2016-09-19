@@ -5,14 +5,34 @@ import sys
 import re
 import datetime
 import time
+import os
+import bisect
+
 from prettytable import PrettyTable
 
+LOCATION_DATABASE = []
 PROVINCE_MAP = {11:"北京",12:"天津",13:"河北",14:"山西",15:"内蒙古",21:"辽宁",
             22:"吉林", 23:"黑龙江",31:"上海",32:"江苏",33:"浙江",34:" 安徽",
             35:"福建",36:"江西",37:"山东",41:"河南",42:"湖北",43:"湖南",
             44:"广东",45:"广西",46:"海南",50:"重庆",51:"四川",52:"贵州",
             53:"云南",54:"西藏",61:"陕西",62:"甘肃",63:"青海",64:"宁夏",
             65:"新疆",71:"台湾",81:"香港",82:"澳门",91:"国外"}
+
+def _load_location_database(database = "data/行政区划代码.txt"):
+    if database is None:
+        raise ValueError("database is not set")
+    if not os.path.exists(database):
+        raise ValueError("'%s' is not exists" % database)
+    global LOCATION_DATABASE
+    print("loading database ...")
+    with open(database, 'r') as f:
+        for line in f:
+            if line.startswith('#'):
+                continue
+            fields = line.split()
+            LOCATION_DATABASE.append((fields[0].strip(), fields[1].strip('\xe3\x80')))
+    LOCATION_DATABASE = sorted(LOCATION_DATABASE, key = lambda item: item[0])
+    return LOCATION_DATABASE
 
 def validate(fn):
     def wrapper(*args, **kwargs):
@@ -30,15 +50,15 @@ def get_location_by_id(id, database = "data/行政区划代码.txt"):
     location_code = id[:6]
     province = PROVINCE_MAP[int(location_code[:2])] 
     city = None
-    with open(database, "r") as f:
-        for record in f:
-             fields = record.split()
-             if location_code == fields[0].strip():
-                 city = fields[1].strip('\xe3\x80')
-                 break
-        if city is None:
-            raise ValueError("'%s' is not a valid location code!" % location_code)
+    global LOCATION_DATABASE
+    if len(LOCATION_DATABASE) == 0:
+        _load_location_database()
+    index = bisect.bisect(LOCATION_DATABASE, (location_code, )) # bisect not support self-define key
+    if LOCATION_DATABASE[index][0] == location_code: # bisect return insert index, so we need check if the key is exists.
+        city = LOCATION_DATABASE[index][1]
         return province + "省" +  city
+    else:
+        raise ValueError("'%s' is not a valid location code!" % location_code)
 
 @validate
 def get_gender_by_id(id):
