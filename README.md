@@ -32,6 +32,29 @@ hello: 2
 world: 1
 ```
 
+#### 4. [getopts example](shell/getopts.sh): getopts usage example.
+
+```bash
+#while getopts 'u:p:h' OPT # don't supress error, prints an error message and unset OPTARG.
+while getopts ':u:p:h' OPT # supress error
+do
+    case $OPT in
+        u)
+            echo "parse '-u' option: value=${OPTARG} index=${OPTIND}"
+            ;;
+        p)
+            echo "parse '-p' option: value=${OPTARG} index=${OPTIND}"
+            ;;
+        h)
+            echo "parse '-h' option: value=${OPTARG} index=${OPTIND}"
+            ;;
+        ?)
+            echo "Invalid option at ${OPTIND}"
+            ;;
+    esac
+done
+```
+
 ### 2. [C/CPP](./cpp)
 
 ### 3. [Golang](./golang)
