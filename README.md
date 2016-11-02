@@ -84,6 +84,31 @@ if(result == 0) :
 s.close()
 ```
 
+#### 3. database query
+
+```python
+
+def query_db(logger, connection_string, query_string):
+    try:
+        engine = sqlalchemy.create_engine(connection_string)
+        res = engine.execute(query_string).first()
+    except sqlalchemy.exc.OperationalError as e:
+        logger.critical("Operational error '%s'" % e)
+    except sqlalchemy.exc.ProgrammingError as e:
+        logger.critical("Programming error '%s'" % e)
+    else:
+        return res[0]
+```
+
 ### 5. [Scala](./scala)
 
 ### 6. [Java](./java)
+
+
+### 7. [Pacemaker]
+
+```
+pcs resource cleanup xxx-server
+pcs resource restart xxx-server
+pcs resource enable xxx-server
+```
